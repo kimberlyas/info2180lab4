@@ -9,20 +9,27 @@ window.onload = function()
 	$("end").onmouseover = eofMaze;
 	$("start").onclick = startMaze;
 	// Make it so that all walls of the maze turn red when the mouse enters any one of them
-    var walls = $$("div#maze div.boundary");
+	var walls = $$("div#maze div.boundary");
     for (var i = 0; i < walls.length; i++) 
 	{
         walls[i].onmouseover = crossedWall;
     }
-	$("outside").onmouseover = outsideMaze;
+	//$("body *").not("div#maze").onmouseover = outsideMaze; 
+	$(document.body).contents().not('div#maze').onmouseover = outsideMaze;
 };
 
 
 // Handle the appropriate event on the appropriate wall by making it turn red.
 function crossedWall() 
 {"use strict";
-    $("boundary1").addClassName("youlose");
+    //$("boundary1").addClassName("youlose");
 	crossed = true;
+	var walls = $$("div#maze div.boundary");
+	for (var i = 0; i < walls.length; i++) 
+	{
+        walls[i].addClassName("youlose");
+    }
+	
 	$("status").textContent = "You Lose!";
 }
 
@@ -48,15 +55,17 @@ function eofMaze()
 function startMaze()
 {"use strict";
 	clicked = true;
+	$("status").textContent = "Ready to play!";
 	if (crossed) 
 	{
 		// reset
 		var walls = $$("div#maze div.boundary");
     	for (var i = 0; i < walls.length; i++) 
 		{
-        	walls[i].addClassName("boundary");
+        	walls[i].removeClassName("youlose");
     	}
 	}
+	crossed = false; // reset variable as well
 }
 
 // Make it so that if the user moves the mouse anywhere outside the maze after clicking the Start area, the walls will light up red and the 			   player will lose the game
@@ -64,10 +73,12 @@ function outsideMaze()
 {"use strict";
 	if (clicked)
 	{
-		$("boundary1").addClassName("youlose");
+		//$("boundary1").addClassName("youlose");
 		$("status").textContent = "Cheater! You Lose!";
+		var walls = $$("div#maze div.boundary");
+		for (var i = 0; i < walls.length; i++) 
+		{
+        	walls[i].addClassName("youlose");
+    	}
 	}
 }
- 
-
- 
