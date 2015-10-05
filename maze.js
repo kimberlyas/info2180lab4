@@ -14,8 +14,43 @@ window.onload = function()
 	{
         walls[i].onmouseover = crossedWall;
     }
-	//$("body *").not("div#maze").onmouseover = outsideMaze; 
-	$(document.body).contents().not('div#maze').onmouseover = outsideMaze;
+	// Finding the ends of the maze
+	$(document.body).onmousemove = function(e)
+	 {
+		// Coordinates in browser window
+  		console.log('mouse X coord: ' + e.clientX);
+  		console.log('mouse Y coord: ' + e.clientY);
+
+  		// The maze element dimensions
+  		var maze = $$("div#maze");
+  		var mazeWidth = maze[0].offsetWidth;
+  		var mazeHeight = maze[0].offsetHeight;
+  		var mazeStartX = maze[0].offsetLeft;
+  		var mazeStartY = maze[0].offsetTop;
+
+  		// Calculate the end points of the maze div
+  		var mazeEndX = parseInt(mazeStartX) + parseInt(mazeWidth);
+  		var mazeEndY = parseInt(mazeStartY) + parseInt(mazeHeight);
+
+  		// Some debug information to know what the start and end coords are
+  		console.log('maze start X coord: ' + mazeStartX);
+  		console.log('maze start Y coord: ' + mazeStartY);
+  		console.log('maze end x coord: '   + mazeEndX);
+  		console.log('maze end Y coord: '   + mazeEndY);
+
+  		// now if we click on start
+  		if (clicked) 
+		{
+      		// check if the mouse pointer is outside the maze
+      		if (e.clientX < mazeStartX || 
+          		e.clientY < mazeStartY || 
+          		e.clientY > mazeEndY   ||
+          		e.clientX > mazeEndX) 
+			{
+          		outsideMaze();
+      		}
+ 		 }
+	 };
 };
 
 
@@ -56,15 +91,12 @@ function startMaze()
 {"use strict";
 	clicked = true;
 	$("status").textContent = "Ready to play!";
-	if (crossed) 
-	{
-		// reset
-		var walls = $$("div#maze div.boundary");
-    	for (var i = 0; i < walls.length; i++) 
+	// reset
+	var walls = $$("div#maze div.boundary");
+    for (var i = 0; i < walls.length; i++) 
 		{
         	walls[i].removeClassName("youlose");
     	}
-	}
 	crossed = false; // reset variable as well
 }
 
@@ -80,5 +112,9 @@ function outsideMaze()
 		{
         	walls[i].addClassName("youlose");
     	}
+		clicked = false;
 	}
 }
+ 
+
+ 
